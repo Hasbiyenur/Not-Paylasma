@@ -66,10 +66,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         if (context.read<AppDependencies>().isLocalJson)
-          SelectableText(
-            'Kayıt yeri: ${context.read<AppDependencies>().dataLocation}',
-          ),
-        Text('Görünüm', style: Theme.of(context).textTheme.titleLarge),
+          Text('Görünüm', style: Theme.of(context).textTheme.titleLarge),
         Text(
           context.read<AppDependencies>().isPersistent
               ? 'Tercihin bu cihazda korunur.'
