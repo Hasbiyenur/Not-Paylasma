@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../core/utils/app_exception.dart';
 import '../../core/utils/validators.dart';
@@ -113,8 +114,25 @@ class FirebaseAuthRepository implements AuthRepository {
       password: password,
     );
     final user = result.user!;
-    await user.updateDisplayName('${firstName.trim()} ${lastName.trim()}');
-    await _ensureProfile(user, first: firstName.trim(), last: lastName.trim());
+    try {
+      await user.updateDisplayName('${firstName.trim()} ${lastName.trim()}');
+      await _ensureProfile(
+        user,
+        first: firstName.trim(),
+        last: lastName.trim(),
+      );
+    } catch (error, stack) {
+      if (kDebugMode) {
+        debugPrint(
+          'Yeni hesap profilini tamamlama: ${error.runtimeType}\n$stack',
+        );
+      }
+      // Auth hesabı zaten oluştu; kullanıcıyı tekrar kaydolmaya yönlendirme.
+      throw const AppException(
+        'Hesabın oluşturuldu ancak profil bilgilerin tamamlanamadı. '
+        'Aynı e-posta ve şifreyle giriş yaparak devam edebilirsin.',
+      );
+    }
   }
 
   @override

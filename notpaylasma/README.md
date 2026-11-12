@@ -1,5 +1,7 @@
 # NotPaylaş
 
+<img src="assets/brand/notpaylas-logo.png" width="80" alt="NotPaylaş logosu">
+
 Türkçe arayüzlü not ve dosya paylaşım uygulaması. Sürüm: **0.3.0+3**.
 
 ## Platformlar
@@ -10,6 +12,8 @@ Türkçe arayüzlü not ve dosya paylaşım uygulaması. Sürüm: **0.3.0+3**.
 | Web / Chrome | Dosya seçme, yerel kayıt, indirme, PNG önizleme ve profil fotoğrafı tarayıcıda doğrulandı. PDF'nin tarayıcı içinde gösterimi kullanılan PDF görüntüleyicisine bağlıdır. |
 | macOS 12 ve üzeri | Swift/Xcode hedefi, Firebase seçenekleri, sandbox izinleri, Keychain Sharing ve CocoaPods yapılandırması mevcut. Native derleme ve cihaz kabulü Mac üzerinde yapılmalıdır. |
 | iOS, Windows, Linux | Bu sürümde çalıştırılabilir uygulama hedefi olarak hazırlanmadı; Firebase seçenekleri de tanımlı değil. |
+
+Logo açık kitap ve paylaşım okundan oluşur; uygulama adında yerel Manrope fontu kullanılır. Font internetten yüklenmez. Lisans: [SIL OFL](assets/fonts/OFL-Manrope.txt). İkonları yeniden üretmek için: `flutter test scripts/render_brand.dart`.
 
 ## Kullanılan teknolojiler
 
@@ -90,7 +94,7 @@ flutter analyze
 flutter test
 ```
 
-Windows için `scripts/verify.ps1` analiz/testleri ASCII geçici kopyada çalıştırır. Son ortak Dart doğrulamasında **60 uygulama testi**, ayrıca **7 emulator güvenlik testi** geçti. Bu sonuçlar macOS native derlemesinin veya gerçek hesapla uçtan uca kabulün yerine geçmez. macOS `.app`, Windows üzerinde üretilemez; bu ortamda Xcode derlemesi çalıştırılmadı.
+Windows için `scripts/verify.ps1` analiz/testleri ASCII geçici kopyada çalıştırır. Son ortak Dart doğrulamasında **61 uygulama testi**, ayrıca **7 emulator güvenlik testi** geçti. Bu sonuçlar macOS native derlemesinin veya gerçek hesapla uçtan uca kabulün yerine geçmez. macOS `.app`, Windows üzerinde üretilemez; bu ortamda Xcode derlemesi çalıştırılmadı.
 
 Yerel dosyalar şifrelenmiş bulut yedeği değildir. Firebase hesabı başka cihazda kullanılabilir; not ve fotoğraflar cihazda kalır. Dağıtım imzası/notarizasyon ve mağaza yayını bu çalışmanın kapsamına dahil değildir.
 

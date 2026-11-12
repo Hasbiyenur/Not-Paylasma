@@ -45,26 +45,40 @@ class HybridAuthRepository implements AuthRepository {
         store.currentUid = null;
         store.sessionRevision++;
       } else {
-        await store.write(() {
-          if (remote.currentUser?.uid != user.uid) return;
-          if (store.currentUid != user.uid) store.sessionRevision++;
-          store.users.clear();
-          store.currentUid = user.uid;
-          store.users[user.uid] = UserModel(
-            uid: user.uid,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
-            photoUrl: store.localAvatars[user.uid],
-          );
-          for (final note in store.notes.values.toList()) {
-            if (note.userId == user.uid) {
-              store.notes[note.id] = note.changed({'userName': user.fullName});
+        final renamedNotes = store.notes.values
+            .where(
+              (note) =>
+                  note.userId == user.uid && note.userName != user.fullName,
+            )
+            .toList();
+        // Profil/oturum JSON'a ait değildir. Özellikle yeni hesap açılışı
+        // yerel disk yazmasının başarısına bağlı olmamalıdır.
+        if (renamedNotes.isNotEmpty) {
+          await store.write(() {
+            if (remote.currentUser?.uid != user.uid) return;
+            for (final note in renamedNotes) {
+              final current = store.notes[note.id];
+              if (current?.userId == user.uid) {
+                store.notes[note.id] = current!.changed({
+                  'userName': user.fullName,
+                });
+              }
             }
-          }
-        });
+          });
+        }
+        if (remote.currentUser?.uid != user.uid) return;
+        if (store.currentUid != user.uid) store.sessionRevision++;
+        store.users.clear();
+        store.currentUid = user.uid;
+        store.users[user.uid] = UserModel(
+          uid: user.uid,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          photoUrl: store.localAvatars[user.uid],
+        );
       }
       if (!_closed) {
         _events.add(currentUser);
@@ -80,7 +94,9 @@ class HybridAuthRepository implements AuthRepository {
       return await action();
     } on FirebaseException catch (error) {
       throw AppException(switch (error.code) {
-        'invalid-credential' || 'wrong-password' || 'user-not-found' => 'E-posta veya şifre hatalı. Eski yerel hesabınız varsa Firebase’e aktar seçeneğini kullanın.',
+        'invalid-credential' ||
+        'wrong-password' ||
+        'user-not-found' => 'E-posta veya şifre hatalı.',
         'email-already-in-use' =>
           'Bu e-posta Firebase’de kayıtlı. Giriş yapın.',
         'operation-not-allowed' => 'Firebase Console’da Authentication e-posta/şifre sağlayıcısını etkinleştirin.',

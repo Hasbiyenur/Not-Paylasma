@@ -7,6 +7,7 @@ import '../../../core/utils/validators.dart';
 import '../../../shared/widgets/page_layout.dart';
 import '../../../shared/widgets/feedback.dart';
 import '../../../shared/widgets/app_loading_screen.dart';
+import '../../../shared/widgets/app_brand.dart';
 import 'register_screen.dart';
 import 'reset_password_screen.dart';
 
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final firebase = context.read<AppDependencies>().isFirebase;
     final localJson = context.read<AppDependencies>().isLocalJson;
     return Scaffold(
-      appBar: AppBar(title: const Text('NotPaylaş')),
+      appBar: AppBar(title: const AppBrand()),
       body: SafeArea(
         child: PageLayout(
           title: 'Tekrar hoş geldin.',

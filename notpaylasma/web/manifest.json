@@ -3,9 +3,9 @@
     "short_name": "NotPaylaş",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#263768",
-    "theme_color": "#263768",
-    "description": "NotPaylaş arayüz önizlemesi.",
+    "background_color": "#202c50",
+    "theme_color": "#202c50",
+    "description": "Notlarını paylaş, birlikte öğren.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

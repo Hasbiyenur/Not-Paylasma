@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/services/app_dependencies.dart';
+import '../../../shared/widgets/app_brand.dart';
 
 import '../../explore/screens/explore_screen.dart';
 import '../../favorites/screens/favorites_screen.dart';
@@ -30,24 +31,7 @@ class _AppShellState extends State<AppShell> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.auto_stories_rounded,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-              const SizedBox(width: 10),
-              const Flexible(
-                child: Text(
-                  'NotPaylaş',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.w800),
-                ),
-              ),
-            ],
-          ),
+          title: const AppBrand(),
           actions: [
             IconButton(
               tooltip: 'Uygulama hakkında',
@@ -55,6 +39,7 @@ class _AppShellState extends State<AppShell> {
               onPressed: () => showAboutDialog(
                 context: context,
                 applicationName: 'NotPaylaş',
+                applicationIcon: const AppLogo(size: 56),
                 applicationVersion: context.read<AppDependencies>().isHybrid
                     ? '0.3.0 • Firebase hesap / yerel dosyalar'
                     : context.read<AppDependencies>().isFirebase

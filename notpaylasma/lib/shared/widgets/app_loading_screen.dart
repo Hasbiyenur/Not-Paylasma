@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'app_brand.dart';
+
 class AppLoadingScreen extends StatelessWidget {
   const AppLoadingScreen({this.message = 'Uygulama hazırlanıyor…', super.key});
 
@@ -16,16 +18,7 @@ class AppLoadingScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.auto_stories_rounded,
-                  size: 64,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'NotPaylaş',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
+                const AppBrand(large: true),
                 const SizedBox(height: 32),
                 const CircularProgressIndicator(),
                 const SizedBox(height: 20),

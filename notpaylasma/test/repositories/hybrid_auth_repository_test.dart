@@ -12,6 +12,7 @@ import 'package:notpaylas/models/selected_file.dart';
 import 'package:notpaylas/models/user_model.dart';
 import 'package:notpaylas/repositories/auth_repository.dart';
 import 'package:notpaylas/repositories/firebase/hybrid_auth_repository.dart';
+import 'package:notpaylas/repositories/local/local_json_store.dart';
 
 class TestRemoteAuth implements AuthRepository {
   final events = StreamController<UserModel?>.broadcast();
@@ -76,6 +77,40 @@ class TestRemoteAuth implements AuthRepository {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  test(
+    'Yerel disk yazılamasa da Firebase kaydı ve oturum açma tamamlanır',
+    () async {
+      final localStore = LocalJsonStore(externalUsers: true);
+      final auth = TestRemoteAuth();
+      final directory = await Directory.systemTemp.createTemp('auth-cache-');
+      final hybrid = HybridAuthRepository(
+        auth,
+        localStore,
+        DiskJsonFileSystem(directory),
+      );
+      await hybrid.ready;
+      localStore.persist = (_) async =>
+          throw const FileSystemException('Disk yazmaya kapalı');
+      try {
+        await hybrid.register(
+          'Çağla',
+          'Şahin',
+          'test@example.com',
+          'OnlyRemote123!',
+        );
+        expect(hybrid.currentUser!.firstName, 'Çağla');
+        expect(localStore.toJson().containsKey('users'), isFalse);
+        await hybrid.signOut();
+        await hybrid.signIn('test@example.com', 'OnlyRemote123!');
+        expect(hybrid.currentUser!.uid, auth.currentUser!.uid);
+      } finally {
+        await hybrid.close();
+        await auth.close();
+        localStore.close();
+        await directory.delete(recursive: true);
+      }
+    },
+  );
   late Directory directory;
   late DiskJsonFileSystem fs;
   late TestRemoteAuth remote;
