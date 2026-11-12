@@ -1,0 +1,27 @@
+# Flutter / Dart (uygulama iskeleti Aşama 2'de üretilecek)
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+coverage/
+.idea/
+*.iml
+android/local.properties
+android/key.properties
+*.jks
+*.keystore
+
+# Yerel geliştirme sırları ve demo çalışma verileri
+.env
+.env.*
+!.env.example
+*service-account*.json
+mock_data/
+node_modules/
+.firebase/
+firebase-debug.log*
+firestore-debug.log
+storage-debug.log
+firebase-tests-output.log
+ui-debug.log

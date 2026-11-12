@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function text(value, min, max) {
+      return value is string && value.size() >= min && value.size() <= max;
+    }
+    function valid(data, uid) {
+      return data.keys().hasAll(['uid','firstName','lastName','email','createdAt','updatedAt'])
+        && data.keys().hasOnly(['uid','firstName','lastName','email','createdAt','updatedAt'])
+        && data.uid == uid && data.email == request.auth.token.email
+        && text(data.firstName,1,60) && text(data.lastName,1,60)
+        && data.createdAt is timestamp && data.updatedAt == request.time;
+    }
+    match /users/{uid} {
+      allow read: if owner(uid);
+      allow create: if owner(uid) && valid(request.resource.data,uid)
+        && request.resource.data.createdAt == request.time;
+      allow update: if owner(uid) && valid(request.resource.data,uid)
+        && request.resource.data.createdAt == resource.data.createdAt;
+    }
+    // Notlar, favoriler, avatarlar ve ek dosyalar yereldir. Diğer yollar kapalıdır.
+  }
+}

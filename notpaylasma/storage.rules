@@ -1,0 +1,9 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Ekler ve profil fotoğrafları cihazda tutulur; istemci bulut dosyası kullanmaz.
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

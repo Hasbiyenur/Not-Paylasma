@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "481457976208",
+    "project_id": "not-paylasma-proje",
+    "storage_bucket": "not-paylasma-proje.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481457976208:android:e7b1e9750e1aa0e8143915",
+        "android_client_info": {
+          "package_name": "com.example.notpaylas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4hs2ZjSbsLVeRQQEc0CqirZdi3j_vHVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

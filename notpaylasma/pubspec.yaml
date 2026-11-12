@@ -1,0 +1,40 @@
+name: notpaylas
+description: "NotPaylaş — Türkçe mobil not paylaşım uygulaması."
+publish_to: none
+version: 0.3.0+3
+
+environment:
+  sdk: ^3.13.7
+
+dependencies:
+  archive: ^4.6.0
+  cloud_firestore: ^7.1.0
+  crypto: ^3.0.8
+  cupertino_icons: 1.0.9
+  file_picker: ^13.3.3
+  firebase_auth: ^7.0.1
+  firebase_core: ^5.1.0
+  firebase_storage: ^14.0.1
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  open_filex: ^5.0.0
+  path_provider: ^2.1.6
+  provider: ^6.1.5+1
+  sembast: ^3.10.1
+  sembast_web: ^2.4.7
+  uuid: ^4.6.0
+  web: ^1.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/data/
+    - assets/data/files/
+    - assets/mock/files/
