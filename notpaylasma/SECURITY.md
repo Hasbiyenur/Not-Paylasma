@@ -1,5 +1,16 @@
 # Firebase yapılandırması ve GitHub uyarıları
 
+## Güncel durum — 12 Kasım 2026 anahtar yenilemesi
+
+- Git geçmişinde yer alan üç aktif anahtar (web, Android, macOS) sağlayıcı tarafında silinerek iptal edildi. Her eski anahtarın aktif listeden çıktığı, silinme bilgisinin bulunduğu ve Firebase Auth tarafından geçersiz olarak reddedildiği doğrulandı.
+- Üç yeni anahtar oluşturuldu. API izinleri yalnızca identitytoolkit.googleapis.com, securetoken.googleapis.com, firestore.googleapis.com, firebaseinstallations.googleapis.com ve firebase.googleapis.com ile sınırlı.
+- Bu bilgisayardaki `.local/firebase-keys.json` ve Android `google-services.json` güncellendi. Yeni anahtarlar Git dışında kalır. Diğer bilgisayarlara güncel yerel ayar ayrıca taşınmalı; eski derlemeler yeniden derlenmelidir.
+- Yeni üç anahtarın Auth API erişimi, gerçek kullanıcı oluşturmadan geçersiz token testiyle doğrulandı. Yeni web anahtarıyla oturumsuz Firestore profil okuması 403/PERMISSION_DENIED döndürdü. Web derlemesinin yeni web anahtarını aldığı doğrulandı.
+- Kurulum sonrası Cloud Billing `billingEnabled: false`; ücretli Firebase/GitHub planı veya ödeme hesabı açılmadı.
+- GitHub API erişiminde depo özel, yönetici yetkisi mevcut fakat secret scanning kapalı bulundu. Bu nedenle GitHub uyarıları API üzerinden kapatılmadı. Ücretli özel-depo taraması etkinleştirilmedi. Önceki erişim sorununu yalnızca oturum yokluğu olarak yorumlayan notlar bu güncellemeyle geçersizdir.
+
+Yeni anahtar değerleri veya erişim belirteçleri belgeye/log çıktısına yazılmadı. Sağlayıcı silme işlemi eski anahtarların kullanımını durdurur; eski commit ve e-posta bildirimlerini kendiliğinden silmez.
+
 ## Bu değişiklik neyi düzeltir?
 
 Gerçek Firebase istemci anahtarları `lib/firebase_options.dart` içinden çıkarıldı. Dosya artık `String.fromEnvironment` kullanır. Proje/app kimlikleri kaynakta kalır; üç anahtar `.local/firebase-keys.json` dosyasında yereldir ve Git tarafından yok sayılır. Android `google-services.json` dosyası diskte korunur fakat Git takibinden çıkarılmıştır; depoda anahtarsız `google-services.example.json` bulunur.
@@ -35,17 +46,17 @@ flutterfire configure --project=not-paylasma-proje --platforms=android,web,macos
 dart scripts/prepare_firebase.dart
 ```
 
-Komut mevcut projeyi hedefler. `lib/firebase_options.dart` üzerine gerçek anahtar üreten varsayılan FlutterFire çıktısını yazdırmayın. Hazırlama betiği yerel JSON yoksa `.local/firebase_options.generated.dart` içindeki üç platform anahtarını alır; Android dosyası yoksa anahtarsız örnekten üretir. Bu çalışmada CLI login, bulut anahtarı değiştirme veya ücretli plan işlemi yapılmadı.
+Komut mevcut projeyi hedefler. `lib/firebase_options.dart` üzerine gerçek anahtar üreten varsayılan FlutterFire çıktısını yazdırmayın. Hazırlama betiği yerel JSON yoksa `.local/firebase_options.generated.dart` içindeki üç platform anahtarını alır; Android dosyası yoksa anahtarsız örnekten üretir. Yerel hazırlama betiği kendi başına login veya bulut değişikliği yapmaz. Üstteki olay müdahalesinde uygulama sahibinin talimatıyla anahtarlar ayrıca yenilendi; ücretli plan açılmadı.
 
 Manuel derlemelere `--dart-define-from-file=.local/firebase-keys.json` eklenmelidir. IDE çalıştırma ayarlarında da aynı Flutter argümanı kullanılmalıdır. Dosya yoksa uygulama gerçek Firebase bağlantısı kuramaz; mock'a sessizce geçmez.
 
 ## Commit edilmiş eski uyarılar
 
-Bu değişiklik, geçmiş commit'leri yeniden yazmaz ve anahtarı iptal etmez. GitHub, dosya kaldırıldığında eski secret scanning uyarısını kendiliğinden kapatmaz: https://docs.github.com/en/code-security/how-tos/manage-security-alerts/manage-secret-scanning-alerts/resolving-alerts
+Kaynak dosyalarının düzenlenmesi tek başına geçmiş commit'leri değiştirmez. Üstteki olay müdahalesinde eski anahtarlar ayrıca sağlayıcı tarafında iptal edildi. GitHub, dosya kaldırıldığında eski secret scanning uyarısını kendiliğinden kapatmaz: https://docs.github.com/en/code-security/how-tos/manage-security-alerts/manage-secret-scanning-alerts/resolving-alerts
 
-Depo sahibi GitHub > Security > Secret scanning içinde her kaydı incelemelidir. İncelenen anahtar yalnızca bu uygulamanın Firebase istemci anahtarıysa, açıklamasıyla uygun gerekçeyle kapatılabilir. Örnek açıklama: `Intentionally public Firebase client configuration, not an admin/private credential. User data access is controlled by Firebase Authentication and Firestore Security Rules.` Anahtar iptal edilmediği için Revoked gerekçesi kullanılmamalıdır. GitHub uyarıları bu bilgisayardan kapatılmadı; doğrulanmış yetkili oturum bulunmuyor.
+GitHub uyarı ekranı erişilebilir olduğunda, bu üç eski anahtar için doğru kapanış gerekçesi artık `Revoked` olur: anahtarların sağlayıcıda silindiği ve reddedildiği doğrulandı. Özel depoda Secret scanning kapalı olduğundan bu işlem API ile tamamlanamadı. Güvenlik paketini ücretli olarak etkinleştirme işlemi yapılmadı.
 
-Gerçek sunucu/private key veya Firebase dışında kullanılan bir anahtar sızıntısı varsa ilgili anahtar ayrıca iptal edilip yenilenmelidir. Mevcut uygulamanın anahtarları kullanıcı onayı olmadan değiştirilmedi; bulut API izinleri de değiştirilmedi.
+Geçmiş yeniden yazılmadı; eski değerler geçmişte bulunabilir ancak doğrulanan üç eski anahtar artık kullanılamaz. Özel anahtar veya başka kimlik bilgileri için ayrı inceleme gerekir. Mevcut kullanıcılar, projeler ve Firestore verileri silinmedi.
 
 ## Commit öncesi kontrol
 
