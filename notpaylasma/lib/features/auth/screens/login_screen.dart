@@ -52,6 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
         child: PageLayout(
           title: 'Tekrar hoş geldin.',
           headerTextAlign: TextAlign.center,
+          centerContent: true,
+          maxWidth: 480,
           subtitle: 'Bilgini paylaş, birlikte öğrenelim.',
           children: [
             const SizedBox(height: 20),
