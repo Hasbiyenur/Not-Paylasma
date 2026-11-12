@@ -1,36 +1,56 @@
-# macOS kurulumu
+# macOS üzerinde NotPaylaş
 
-12 Kasım 2026 güncellemesi: kullanıcı hesabı/profili Firebase Auth ve Firestore'da, profil fotoğrafı ve not/dosyalar yereldedir. Yalnızca ücretsiz plan kullanılır. Aşağıdaki eski başlangıç tariflerinden önce [güncel düzeni](FIREBASE_HESAP_YEREL_DOSYALAR.md) okuyun.
+## Güncel yapılandırma
 
+Uygulama macOS 12.0 ve üzerini hedefler. `macos/` içinde Swift Runner, Xcode proje/workspace, Swift Package Manager bağlantısı ve CocoaPods Podfile bulunur. Flutter gerektiğinde CocoaPods eklentilerini kurar; Pods ve ephemeral dosyaları Mac üzerinde üretilir.
 
-Güncel veri modu yerel JSON'dur. Hem `lib/main.dart` hem eski `lib/main_firebase.dart` komutu yerel JSON açar. Aşağıdaki Firebase ayarları eski/opsiyonel altyapı adımlarıdır. Güncel kayıt davranışı: [Yerel JSON](YEREL_JSON_KAYIT.md).
+`lib/firebase_options.dart` içindeki macOS seçenekleri mevcut `not-paylasma-proje` uygulamasına aittir. Xcode bundle ID `com.example.notpaylas` ile eşleşir. Normal çalıştırma için Firebase CLI oturumu açmak, yeni proje oluşturmak veya `flutterfire configure` komutunu tekrar çalıştırmak gerekmez.
 
-11 Kasım 2026: Flutter'ın kurulu SDK şablonuyla macos platform klasörü eklendi. Geliştirme bundle ID'si `com.example.notpaylas`; Firebase CLI bu değeri sorarsa aynısı girilir. Dağıtım öncesi uygulama sahibinin kalıcı kimliği seçilmeli; Xcode ve Firebase aynı kimlikle yapılandırılmalıdır.
+Yalnızca kullanıcı hesabı/profili Firebase Auth/Firestore'dadır. Not, favori, ek ve profil fotoğrafı uygulamanın yerel destek dizininde tutulur. Firebase Storage kullanılmaz. Mevcut proje ücretsiz Spark planındadır; ödeme hesabı veya ücretli plan açılmaz.
 
-## Firebase yapılandırması
+## Mac hazırlığı
 
-Kullanıcının başlattığı `flutterfire configure` işleminde macOS bundle ID alanına `com.example.notpaylas` girilir. Proje listeden seçilir; görünen ad ile proje kimliği karıştırılmamalıdır. Tekrar yapılandırmak gerekirse:
+1. Projenin tamamını Mac'e alın; `macos`, `lib`, `assets`, `scripts`, `pubspec.yaml` ve `pubspec.lock` birlikte bulunmalıdır. Windows'tan `build`, `.dart_tool`, Pods veya ephemeral klasörlerini taşımayın.
+2. Flutter 3.47.9 / Dart 3.13.7 ile uyumlu SDK kurun. Tam Xcode'u kurup bir kez açın; gerekli ilk kurulum ve lisans adımlarını kendiniz tamamlayın.
+3. Xcode komut satırı araçlarının tam Xcode'u göstermesini sağlayın. Gerekirse `sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer` çalıştırın. `xcodebuild -version` Xcode sürümünü göstermelidir.
+4. [CocoaPods kurulum rehberi](https://guides.cocoapods.org/using/getting-started.html) ile CocoaPods'u kurun; `pod --version` çalışmalıdır. Betik sistem araçlarını kendiliğinden kurmaz veya sudo çalıştırmaz.
+5. `flutter doctor -v` çıktısındaki Xcode/macOS sorunlarını giderin; `flutter devices` listesinde macOS görünmelidir.
 
-```powershell
-flutterfire configure --platforms=android,web,macos --macos-bundle-id=com.example.notpaylas
-```
+## Çalıştırma ve derleme
 
-CLI gerçek `lib/firebase_options.dart` ve gerekirse `macos/Runner/GoogleService-Info.plist` dosyalarını üretir. Mevcut options dosyasını değiştirme sorusuna evet denir. Sonuç tablosunda macos satırı bulunmalı. Bu adım Console'da Email/Password, Firestore, Storage ve güvenlik kurallarının kurulmasının yerine geçmez.
-
-## Mac üzerinde çalıştırma
-
-macos klasörü de kaynaklarla birlikte Mac'e aktarılır. Flutter ve Xcode kurulur; Xcode ilk kurulum/lisans işlemleri tamamlanır. Xcode'da `macos/Runner.xcworkspace` açılıp Runner hedefinde Signing & Capabilities ve geliştirici takımı kontrol edilir. Firebase için Keychain Sharing yetkisi takım ve uygulama kimliğiyle birlikte doğrulanır. Bağımlılık çözümlemesi CocoaPods isterse Mac üzerinde CocoaPods kurulur.
+Terminalde `pubspec.yaml` dosyasının bulunduğu klasöre geçin:
 
 ```bash
-flutter doctor -v
-flutter pub get
-flutter run -d macos -t lib/main_firebase.dart
-# Firebase olmadan mock:
-flutter run -d macos -t lib/main.dart
+bash scripts/macos.sh run
 ```
 
-Şablon minimum macOS 12.0 hedefler. DebugProfile ve Release entitlement dosyalarına internet istemcisi, kullanıcının seçtiği dosyaları okuma/yazma ve Keychain grubu eklendi; şablonun debug/JIT izinleri korundu. Dosya seçme, kaydetme/açma, Auth oturum kalıcılığı ve Firebase işlemleri Mac üzerinde ayrıca denenmelidir.
+Betik araçları kontrol eder, bağımlılıkları çözer ve `flutter run -d macos` başlatır. Betiği `bash` ile çalıştırdığınız için yürütme biti gerekmez.
 
-Windows üzerinde macOS derlemesi veya cihaz kabulü yapılmadı. `flutter build macos -t lib/main_firebase.dart` Mac üzerinde çalıştırılır. İmzalama ve dağıtım kabulü bekliyor; uygulama ikonları Flutter şablonudur.
+```bash
+# Analiz + mevcut uygulama testleri + debug .app:
+bash scripts/macos.sh check
+# Release .app:
+bash scripts/macos.sh build
+```
 
-Resmî kaynaklar: [Flutter macOS uygulamaları](https://docs.flutter.dev/platform-integration/macos/building), [Firebase Flutter kurulumu ve Keychain Sharing](https://firebase.google.com/docs/flutter/setup).
+Release çıktısı `build/macos/Build/Products/Release/notpaylas.app` olur. Bu komut dağıtım imzası/notarizasyon veya App Store yayını yapmaz. İlk native bağımlılık çözümü internet ve yeterli disk alanı ister.
+
+## Xcode, izinler ve oturum
+
+Gerekirse `open macos/Runner.xcworkspace` ile workspace'i açın. Runner > Signing & Capabilities altında bundle ID'yi ve yerel geliştirme için uygun imzalamayı kontrol edin. Kişisel Team ID/parolası kaynaklara yazılmaz; ücretli Apple Developer üyeliği veya yayın bu rehber tarafından istenmez. Keychain imza hatası alınırsa mevcut entitlement'ları silmek yerine Xcode'da yerel imzalama ayarlarını kontrol edin.
+
+Debug/Profile ve Release entitlement dosyalarında sandbox, dışarı ağ bağlantısı, kullanıcı seçimiyle dosya okuma/yazma ve Keychain grubu vardır. Runner hedefinde Keychain Sharing işaretlidir. Debug/JIT ve geliştirme sunucusu izinleri yalnızca Debug/Profile dosyasında korunur.
+
+Firebase Auth hesap/oturum saklamasını, Keychain üzerinden native SDK yönetir. Yerel profil fotoğrafı bu kimlik servisine yüklenmez. Dosya seçme/kaydetme native seçiciyi, PDF/DOCX açma macOS'un varsayılan uygulamasını kullanır. Firebase SDK Dart seçenekleriyle başlatıldığı için ayrıca sahte bir GoogleService-Info.plist üretilmez.
+
+## Mac üzerinde kabul
+
+- Açılış ve giriş yükleme ekranı, gerçek Firebase hesabıyla kayıt/giriş/çıkış ve profil adı değişikliği.
+- Uygulamayı kapatıp açınca oturumun ve yerel not/favori/fotoğrafın korunması.
+- PDF/PNG seçme ve not kaydetme; PNG'nin uygulama içinde, PDF/DOCX'in uygun uygulamada açılması.
+- İndir diyaloğunda kaydetme ve iptal; PNG profil fotoğrafı seçme/kaydetme/gösterme.
+- Erişim hatası/ağ kesintisinde anlaşılır hata, başka kullanıcının profiline erişimin reddedilmesi.
+
+Windows üzerinde native macOS derlemesi yapılamadı. Yapılandırma hazırlığı ve ortak Dart testleri Mac üzerindeki bu kabulün yerine geçmez.
+
+Resmî kaynaklar: [Flutter macOS ortamı](https://docs.flutter.dev/platform-integration/macos/setup), [macOS izinleri ve derleme](https://docs.flutter.dev/platform-integration/macos/building), [Firebase Flutter ve Keychain Sharing](https://firebase.google.com/docs/flutter/setup).

@@ -1,5 +1,7 @@
 # Geliştirme ortamı ve doğrulama
 
+12 Kasım 2026 — Güncel proje notpaylasma klasöründe README platform/teknoloji tablosu ve güncel Firebase hesap + yerel veri düzeniyle yenilendi. macOS için standart Flutter Podfile, isteğe bağlı Pods xcconfig bağlantıları, Runner Keychain capability ve scripts/macos.sh (run/check/build) eklendi. macOS 12.0 hedefi, mevcut Firebase bundle ID'si, sandbox/ağ/dosya/Keychain entitlement'ları korundu. Bash sözdizimi ve Mac dışı ortam kontrolü, plist/scheme XML ayrıştırması geçti; güncel proje yolunda flutter analyze temiz. Dart çalışma kodu değişmediği için önceki 60 test tekrar çalıştırılmadı. Windows üzerinde Xcode/native macOS derlemesi ve gerçek Mac dosya/Auth kabulü yapılamadı; Mac'te bash scripts/macos.sh check ve ardından kullanım kabulü gereklidir.
+
 12 Kasım 2026 — Android Gradle, Windows'taki `notpaylaşma` klasör adını non-ASCII yol denetiminde reddetti. Yerel klasörü taşımadan bu ilk engeli kaldırmak için `android/gradle.properties` içine `android.overridePathCheck=true` eklendi. Bu seçenek tüm Android/native araçlarının Unicode yol desteğini garanti etmez; araçlardan ayrıca yol hatası alınırsa Türkçe karakter içermeyen bir proje yolu kullanılmalıdır.
 
 Android debug derlemesinde yol kontrolü geçildi; `:app:mergeDebugNativeLibs` aşamasında Flutter JNI arşivlerini açarken “Diskte yeterli yer yok” hatası alındı. Son kontrolde C: boş alanı yaklaşık 0,52 GB. APK üretimi doğrulanamadı; diskte yeterli alan açıldıktan sonra yeniden derlenmelidir.
