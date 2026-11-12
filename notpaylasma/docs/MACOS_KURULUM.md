@@ -1,5 +1,7 @@
 # macOS üzerinde NotPaylaş
 
+12 Kasım 2026 istemci ayarı güncellemesi: anahtarlar Git dışında `.local/firebase-keys.json` içindedir. Yeni klonda önce [SECURITY.md](../SECURITY.md) kurulumunu tamamlayın. `bash scripts/macos.sh run` yerel dosyayı otomatik kullanır. Doğrudan Flutter/Xcode çalıştırmalarında da ilgili Dart define ayarının hazırlanması gerekir; manuel Flutter komutu `flutter run -d macos --dart-define-from-file=.local/firebase-keys.json` olur. Eski anahtarsız çalıştırma komutları güncel düzeni yansıtmaz.
+
 ## Güncel yapılandırma
 
 Uygulama macOS 12.0 ve üzerini hedefler. `macos/` içinde Swift Runner, Xcode proje/workspace, Swift Package Manager bağlantısı ve CocoaPods Podfile bulunur. Flutter gerektiğinde CocoaPods eklentilerini kurar; Pods ve ephemeral dosyaları Mac üzerinde üretilir.

@@ -2,6 +2,8 @@ param([switch]$BuildWeb, [switch]$BuildFirebaseWeb, [switch]$BrowserTests)
 
 $ErrorActionPreference = 'Stop'
 $sourceRoot = Split-Path -Parent $PSScriptRoot
+$keyFile = Join-Path $sourceRoot '.local/firebase-keys.json'
+if (($BuildWeb -or $BuildFirebaseWeb) -and !(Test-Path -LiteralPath $keyFile)) { throw 'Yerel Firebase ayarı eksik. SECURITY.md dosyasına bakın.' }
 $checkRoot = Join-Path $env:TEMP ('notpaylas_check_' + [guid]::NewGuid().ToString('N'))
 if ($checkRoot -match '[^\x00-\x7F]') {
     throw 'Geçici dizin ASCII olmalı. TEMP için uygun bir dizin seçin.'
@@ -29,11 +31,11 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Chrome JSON test failed.' }
     }
     if ($BuildWeb) {
-        flutter build web
+        flutter build web "--dart-define-from-file=$keyFile"
         if ($LASTEXITCODE -ne 0) { throw 'Web derlemesi başarısız.' }
     }
     if ($BuildFirebaseWeb) {
-        flutter build web --target lib/main_firebase.dart --output build/firebase-web
+        flutter build web "--dart-define-from-file=$keyFile" --target lib/main_firebase.dart --output build/firebase-web
         if ($LASTEXITCODE -ne 0) { throw 'Firebase web build failed.' }
     }
     Write-Output "Doğrulama tamamlandı. Çalışma kopyası: $checkRoot"

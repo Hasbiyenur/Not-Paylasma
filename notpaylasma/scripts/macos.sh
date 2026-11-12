@@ -12,6 +12,8 @@ if [[ "$(uname -s)" != Darwin ]]; then
 fi
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$project_root"
+key_file="$project_root/.local/firebase-keys.json"
+dart scripts/prepare_firebase.dart
 if [[ "$action" == diagnose ]]; then
   mkdir -p build/diagnostics
   log_file="$project_root/build/diagnostics/macos.log"
@@ -41,7 +43,7 @@ if [[ "$action" == diagnose ]]; then
       exit "$dependency_status"
     fi
     echo '=== macOS debug derlemesi ==='
-    flutter build macos --debug --verbose
+    flutter build macos --debug --verbose "--dart-define-from-file=$key_file"
   ) 2>&1 | tee "$log_file"; then
     echo "Derleme başarılı. Tanılama: $log_file"
   else
@@ -61,11 +63,11 @@ done
 xcodebuild -version
 flutter pub get
 case "$action" in
-  run) exec flutter run -d macos ;;
+  run) exec flutter run -d macos "--dart-define-from-file=$key_file" ;;
   check)
     flutter analyze
     flutter test
-    flutter build macos --debug
+    flutter build macos --debug "--dart-define-from-file=$key_file"
     ;;
-  build) exec flutter build macos --release ;;
+  build) exec flutter build macos --release "--dart-define-from-file=$key_file" ;;
 esac

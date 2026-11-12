@@ -25,3 +25,11 @@ firestore-debug.log
 storage-debug.log
 firebase-tests-output.log
 ui-debug.log
+
+# Yerel Firebase istemci yapılandırması (örnek dosyalar depoda kalır)
+.local/
+android/app/google-services.json
+macos/Runner/GoogleService-Info.plist
+*.p12
+*.pfx
+*.key

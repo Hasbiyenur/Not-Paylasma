@@ -61,16 +61,18 @@ Mevcut Firebase projesi **ücretsiz Spark planında**, faturalandırma kapalıd�
 
 Eski hesabı Firebase'e aktarma ve profilden JSON indirme butonları kullanıcı isteğiyle kaldırılmıştır. Mock repository'ler ve örnek hesaplar yalnızca eski altyapı/testler için kaynaklarda bulunur; normal giriş Firebase hesabı ister.
 
+Firebase anahtarları Git dışında `.local/firebase-keys.json` içinde tutulur. Bu bilgisayarda dosya hazırlandı; yeni klonda önce [yerel Firebase kurulumunu](SECURITY.md) tamamlayın.
+
 ## Çalıştırma
 
 Proje kökü `pubspec.yaml` dosyasının bulunduğu `notpaylasma` klasörüdür.
 
 ```bash
 flutter pub get
-flutter run -d chrome --web-port 8767
+flutter run -d chrome --web-port 8767 --dart-define-from-file=.local/firebase-keys.json
 # Bağlı Android cihaz/emülatör için:
 flutter devices
-flutter run -d <cihaz-kimligi>
+flutter run -d <cihaz-kimligi> --dart-define-from-file=.local/firebase-keys.json
 ```
 
 ### Mac üzerinde
@@ -85,7 +87,7 @@ bash scripts/macos.sh check
 bash scripts/macos.sh build
 ```
 
-Manuel karşılığı: `flutter pub get` ardından `flutter run -d macos`. `main.dart` ve `main_firebase.dart` aynı Firebase hesap + yerel dosya düzenini kullanır. Xcode'da `macos/Runner.xcworkspace` açılır. Bundle ID `com.example.notpaylas` mevcut Firebase macOS kaydıyla eşleşir; kimlik değiştirilirse Firebase kaydı da güncellenmelidir. İmzalama/Keychain gereksinimleri için [macOS rehberini](docs/MACOS_KURULUM.md) okuyun.
+Manuel karşılığı: `flutter pub get` ardından `flutter run -d macos --dart-define-from-file=.local/firebase-keys.json`. `main.dart` ve `main_firebase.dart` aynı Firebase hesap + yerel dosya düzenini kullanır. Xcode'da `macos/Runner.xcworkspace` açılır. Bundle ID `com.example.notpaylas` mevcut Firebase macOS kaydıyla eşleşir; kimlik değiştirilirse Firebase kaydı da güncellenmelidir. İmzalama/Keychain gereksinimleri için [macOS rehberini](docs/MACOS_KURULUM.md) okuyun.
 
 ## Doğrulama ve sınırlar
 
