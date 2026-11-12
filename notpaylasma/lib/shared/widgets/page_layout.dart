@@ -5,9 +5,11 @@ class PageLayout extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.children,
+    this.headerTextAlign = TextAlign.start,
     super.key,
   });
 
+  final TextAlign headerTextAlign;
   final String title;
   final String subtitle;
   final List<Widget> children;
@@ -26,6 +28,7 @@ class PageLayout extends StatelessWidget {
               children: [
                 Text(
                   title,
+                  textAlign: headerTextAlign,
                   style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
@@ -33,6 +36,7 @@ class PageLayout extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   subtitle,
+                  textAlign: headerTextAlign,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),

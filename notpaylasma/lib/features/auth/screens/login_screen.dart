@@ -51,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: PageLayout(
           title: 'Tekrar hoş geldin.',
+          headerTextAlign: TextAlign.center,
           subtitle: 'Bilgini paylaş, birlikte öğrenelim.',
           children: [
             const SizedBox(height: 20),
@@ -87,9 +88,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  FilledButton(
-                    onPressed: busy ? null : _login,
-                    child: Text(busy ? 'Giriş yapılıyor…' : 'Giriş yap'),
+                  SizedBox(
+                    width: 280,
+                    child: FilledButton(
+                      onPressed: busy ? null : _login,
+                      child: Text(busy ? 'Giriş yapılıyor…' : 'Giriş yap'),
+                    ),
                   ),
                 ],
               ),
